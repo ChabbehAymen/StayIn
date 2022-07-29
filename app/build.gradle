@@ -9,6 +9,7 @@ plugins {
 android {
     compileSdk 32
 
+
     defaultConfig {
         applicationId "com.example.stayin"
         minSdk 21
