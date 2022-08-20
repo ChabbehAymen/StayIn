@@ -1,5 +1,6 @@
 package com.example.stayin.data
 
+import android.widget.ImageView
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -11,5 +12,11 @@ data class NoteItem (
     @ColumnInfo
     val title: String,
     @ColumnInfo
-    val text: String
+    val text: String,
+    @ColumnInfo
+    val image: ImageView,
+    @ColumnInfo
+    val tag: String,
+    @ColumnInfo
+    val date: String
                      )

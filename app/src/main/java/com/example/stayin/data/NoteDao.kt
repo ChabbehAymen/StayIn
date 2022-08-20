@@ -9,4 +9,8 @@ interface NoteDao {
 
     @Query("Select * from noteitem")
     fun getNotes(): Flow<List<NoteItem>>
+
+    @Query("Select tag from noteitem")
+    fun getTags(): Flow<List<String>>
+
 }
