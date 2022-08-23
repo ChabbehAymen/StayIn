@@ -12,12 +12,4 @@ class MainViewModel(private val noteDao: NoteDao): ViewModel() {
     private var _notes: LiveData<List<NoteItem>> = noteDao.getNotes().asLiveData()
     val notes get() = _notes.value
 
-    fun getNotes(){
-
-    }
-
-    fun saveNote(note: NoteItem){
-//        noteDao.insert(note)
-    }
-
 }
