@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.stayin.data.NoteItem
 import com.example.stayin.databinding.NoteItemBinding
 
-class MainFragmentAdapter: ListAdapter<NoteItem,MainFragmentAdapter.ViewHolder>(DiffCallBack) {
+class MainFragmentAdapter(private val onItemClicked: (NoteItem) -> Unit): ListAdapter<NoteItem,MainFragmentAdapter.ViewHolder>(DiffCallBack) {
 
     inner class ViewHolder(private var binding: NoteItemBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(noteItem: NoteItem){
