@@ -1,11 +1,10 @@
 package com.example.stayin.data
 
-import android.widget.ImageView
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "note_database")
 data class NoteItem (
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
@@ -14,7 +13,7 @@ data class NoteItem (
     @ColumnInfo
     val text: String,
     @ColumnInfo
-    val image: ImageView,
+    val image: String,
     @ColumnInfo
     val tag: String,
     @ColumnInfo

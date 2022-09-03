@@ -88,7 +88,6 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.appcompat.widget.Toolbar>
 
-                <!--TODO("after creating the viewModel, in app:listData = '@{viewModel.data}'")-->
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/mainFragment_recycler_view"
@@ -97,7 +96,6 @@
                     android:clipToPadding="true"
                     app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
                     tools:itemCount="5"
-                    app:listData = ""
                     tools:listitem="@layout/note_item" />
 
             </LinearLayout>

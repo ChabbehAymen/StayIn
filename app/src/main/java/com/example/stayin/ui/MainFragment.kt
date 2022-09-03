@@ -1,16 +1,16 @@
 package com.example.stayin.ui
 
-import android.app.Application
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.RecyclerView
-import com.example.stayin.R
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.stayin.StayinApplication
+import com.example.stayin.data.NoteItem
 import com.example.stayin.databinding.FragmentMainBinding
+import com.example.stayin.ui.adapters.MainFragmentAdapter
 import com.example.stayin.ui.models.MainViewModel
 import com.example.stayin.ui.models.MainViewModelFactory
 
@@ -18,9 +18,10 @@ import com.example.stayin.ui.models.MainViewModelFactory
 class MainFragment : Fragment() {
 
     private lateinit var binding: FragmentMainBinding
-    private val viewModel: MainViewModel by viewModels {
+    private val viewModel: MainViewModel by activityViewModels {
         MainViewModelFactory((activity?.application as StayinApplication).noteDatabase.noteDao())
     }
+    private val mAdapter = MainFragmentAdapter({})
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +34,21 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpRecyclerView()
     }
 
+    private fun setUpRecyclerView(){
+        binding.mainFragmentRecyclerView.apply {
+            layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
+            adapter =  mAdapter
+        }
+        submitList()
+    }
+    private fun getNotesList(): List<NoteItem>? {
+        return viewModel.getNotes().value
+    }
+
+    private fun submitList(){
+        mAdapter.submitList(getNotesList())
+    }
 }

@@ -6,10 +6,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NoteDao {
 
-    @Query("Select * from noteitem")
+    @Query("Select * from note_database")
     fun getNotes(): Flow<List<NoteItem>>
 
-    @Query("Select tag from noteitem")
+    @Query("Select * from note_database where id=:id")
+    fun getNote(id: Int):Flow<NoteItem>
+
+    @Query("Select tag from note_database")
     fun getTags(): Flow<List<String>>
 
     @Insert
