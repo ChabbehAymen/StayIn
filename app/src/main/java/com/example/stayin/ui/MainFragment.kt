@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.stayin.R
 import com.example.stayin.StayinApplication
 import com.example.stayin.data.NoteItem
 import com.example.stayin.databinding.FragmentMainBinding
@@ -35,6 +37,9 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpRecyclerView()
+        binding.addFloatingActionButton.setOnClickListener {
+            navigateToAddFragment()
+        }
     }
 
     private fun setUpRecyclerView(){
@@ -50,5 +55,10 @@ class MainFragment : Fragment() {
 
     private fun submitList(){
         mAdapter.submitList(getNotesList())
+    }
+
+    private fun navigateToAddFragment(){
+        val action = R.id.action_mainFragment_to_editFragment
+        findNavController().navigate(action)
     }
 }
