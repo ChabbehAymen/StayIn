@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import androidx.navigation.fragment.findNavController
 import com.example.stayin.R
 import com.example.stayin.databinding.FragmentEditBinding
+import kotlin.concurrent.fixedRateTimer
 
 
 class EditFragment : Fragment() {
@@ -27,6 +28,7 @@ class EditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onBackButtonClick(binding.navigateBackImageButton)
+        onShowEditFragmentBottomSheetDialog(binding.bottomSheetDialogBtn)
     }
 
     private fun onBackButtonClick(backButton: ImageButton){
@@ -40,10 +42,14 @@ class EditFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun onShowDesignDialog(arrowUpButton: ImageButton){
+    private fun onShowEditFragmentBottomSheetDialog(arrowUpButton: ImageButton){
         arrowUpButton.setOnClickListener {
-            // show design dialog fragment
+            showEditFragmentBottomSheetDialog()
         }
+    }
+    private fun showEditFragmentBottomSheetDialog(){
+        val bottomSheetDialog = EditFragmentBottomSheetDialog()
+        fragmentManager?.let { bottomSheetDialog.show(it, "Bottom Sheet Dialog") }
     }
 
 }
