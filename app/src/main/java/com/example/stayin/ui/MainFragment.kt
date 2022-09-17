@@ -1,11 +1,13 @@
 package com.example.stayin.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.stayin.R
@@ -15,6 +17,8 @@ import com.example.stayin.databinding.FragmentMainBinding
 import com.example.stayin.ui.adapters.MainFragmentAdapter
 import com.example.stayin.ui.models.MainViewModel
 import com.example.stayin.ui.models.MainViewModelFactory
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 
 class MainFragment : Fragment() {
@@ -40,24 +44,55 @@ class MainFragment : Fragment() {
         binding.addFloatingActionButton.setOnClickListener {
             navigateToAddFragment()
         }
+
     }
 
     private fun setUpRecyclerView(){
         binding.mainFragmentRecyclerView.apply {
-            layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
-            adapter =  mAdapter
+            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            adapter = mAdapter
         }
-        submitList()
-    }
-    private fun getNotesList(): List<NoteItem>? {
-        return viewModel.getNotes().value
-    }
-
-    private fun submitList(){
-        mAdapter.submitList(getNotesList())
+        lifecycle.coroutineScope.launch {
+            viewModel.getNotes().collect(){
+                mAdapter.submitList(it)
+            }
+        }
     }
 
-    private fun navigateToAddFragment(){
+
+    private fun submittedList(): List<NoteItem> {
+        val mutableList = mutableListOf<NoteItem>()
+        for (i in 0..7) {
+            mutableList.add(
+                NoteItem(
+                    title = "Home",
+                    text = getString(R.string.text_for_test),
+                    image = "NULL",
+                    date = "25/10/2003",
+                    color = "NULL",
+                    tag = "TEST"
+                )
+            )
+        }
+        mutableList.add(differentNoteItem())
+        return mutableList
+    }
+    private fun differentNoteItem(): NoteItem{
+        return NoteItem(
+            title = "I Got You",
+            text = getString(R.string.text_for_test),
+            image = "NULL",
+            date = "25/10/2003",
+            color = ConstantValues.white,
+            tag = "NOTE"
+        )
+    }
+
+    private fun submitList() {
+        mAdapter.submitList(submittedList())
+    }
+
+    private fun navigateToAddFragment() {
         val action = R.id.action_mainFragment_to_editFragment
         findNavController().navigate(action)
     }

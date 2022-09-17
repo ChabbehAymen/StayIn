@@ -21,6 +21,6 @@
 
     <style name="AppModalStyle"
         parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/edit_fragment_bottom_sheet_dialog</item>
+        <item name="android:background">@drawable/search_bar_shape</item>
     </style>
 </resources>

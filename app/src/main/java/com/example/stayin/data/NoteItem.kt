@@ -17,5 +17,7 @@ data class NoteItem (
     @ColumnInfo
     val tag: String,
     @ColumnInfo
-    val date: String
+    val date: String,
+    @ColumnInfo
+    val color: String
                      )
