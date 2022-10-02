@@ -1,4 +1,4 @@
-package com.example.stayin.ui
+package com.example.stayin.presentation.ui.editFragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

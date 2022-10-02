@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface NoteDao {
 
     @Query("Select * from note_database")
-    fun getNotes(): Flow<List<NoteItem>>
+    fun getAll(): Flow<List<NoteItem>>
 
     @Query("Select * from note_database where id=:id")
     fun getNote(id: Int):Flow<NoteItem>

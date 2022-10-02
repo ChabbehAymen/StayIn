@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingTop="16dp"
     android:paddingBottom="16dp"
-    tools:context=".ui.EditFragmentBottomSheetDialog">
+    tools:context=".presentation.ui.editFragment.EditFragmentBottomSheetDialog">
 
     <LinearLayout
         android:id="@+id/colors_piker_layout"

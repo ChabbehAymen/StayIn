@@ -1,4 +1,4 @@
-package com.example.stayin.ui
+package com.example.stayin.presentation.ui.editFragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,32 +12,42 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.stayin.R
-import com.example.stayin.StayinApplication
 import com.example.stayin.databinding.FragmentEditBinding
-import com.example.stayin.ui.models.EditFragmentViewModel
-import com.example.stayin.ui.models.EditFragmentViewModelFactory
+import com.example.stayin.presentation.ui.SharedViewModel
+import com.example.stayin.presentation.utils.ConstantValues
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+@AndroidEntryPoint
 class EditFragment : Fragment() {
 
-    private lateinit var binding: FragmentEditBinding
-    private val viewModel: EditFragmentViewModel by activityViewModels {
-        EditFragmentViewModelFactory((activity?.application as StayinApplication).noteDatabase.noteDao())
-    }
+    private var _binding: FragmentEditBinding? = null
+    private val binding get() = _binding!!
+    private val viewModel: SharedViewModel by activityViewModels()
+    private var toEditNoteId = ConstantValues.NULL_ARGUMENT
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentEditBinding.inflate(layoutInflater)
+        _binding = FragmentEditBinding.inflate(layoutInflater)
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        arguments?.let {
+            toEditNoteId = it.getInt("noteId")
+        }
+        isOnEditMode()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        onEditModeUiUpdate()
         setDateAndTimeText(binding.dateAndTimeText)
         onBackButtonClick(binding.navigateBackImageButton)
         onShowEditFragmentBottomSheetDialog(binding.bottomSheetDialogBtn)
@@ -45,13 +55,30 @@ class EditFragment : Fragment() {
         observeTextInputChange()
     }
 
-    private fun onBackButtonClick(backButton: ImageButton){
+    private fun isOnEditMode() {
+        if (toEditNoteId != ConstantValues.NULL_ARGUMENT) {
+            viewModel.getIsOnEditMode(true)
+            viewModel.getNoteById(toEditNoteId)
+        }
+    }
+
+    private fun onEditModeUiUpdate() {
+        if (viewModel.isOnEditMode){
+            val noteItem = viewModel.editingNote
+            binding.apply {
+                textFieldForTitle.setText(noteItem.title)
+                textFieldForNote.setText(noteItem.text)
+            }
+        }
+    }
+
+    private fun onBackButtonClick(backButton: ImageButton) {
         backButton.setOnClickListener {
             navigateToMainFragment()
         }
     }
 
-    private fun navigateToMainFragment(){
+    private fun navigateToMainFragment() {
         val action = R.id.action_editFragment_to_mainFragment
         findNavController().navigate(action)
     }
@@ -123,5 +150,10 @@ class EditFragment : Fragment() {
         binding.textFieldForNote.doOnTextChanged { text, _, _, _ ->
             viewModel.getNoteText(text.toString())
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

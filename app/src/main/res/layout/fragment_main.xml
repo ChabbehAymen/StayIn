@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MainFragment">
+    tools:context=".presentation.ui.mainFragment.MainFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -92,10 +92,12 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/mainFragment_recycler_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="true"
-                    android:layout_marginBottom="5dp"
+                    android:layout_height="match_parent"
+                    android:padding="6dp"
+                    android:clipToPadding="false"
                     app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                    app:spanCount="2"
+                    tools:itemCount="16"
                     tools:listitem="@layout/note_item" />
 
             </LinearLayout>
