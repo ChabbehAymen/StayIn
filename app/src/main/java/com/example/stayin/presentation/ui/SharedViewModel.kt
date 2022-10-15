@@ -1,20 +1,21 @@
 package com.example.stayin.presentation.ui
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stayin.data.NoteItem
 import com.example.stayin.presentation.utils.ConstantValues
 import com.example.stayin.useCases.NoteUseCase
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class SharedViewModel @Inject constructor(private val noteUseCase: NoteUseCase) :
-    ViewModel() {
+class SharedViewModel : ViewModel() {
 
+    @Inject lateinit var noteUseCase: NoteUseCase
     private val noteId = 0
     private var noteTitle = ""
     private var noteText = ""

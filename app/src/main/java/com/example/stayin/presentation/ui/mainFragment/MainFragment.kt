@@ -17,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainFragment : Fragment() {
 
     private lateinit var binding: FragmentMainBinding
-    private val viewModel: SharedViewModel by activityViewModels()
+    private val viewModel by activityViewModels<SharedViewModel>()
     private val mAdapter = MainFragmentAdapter { noteItem ->
         viewModel.getNoteById(noteItem.id)
         navigateToEditFragment(noteItem.id)
