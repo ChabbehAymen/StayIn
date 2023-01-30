@@ -13,9 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class SharedViewModel : ViewModel() {
+class SharedViewModel(private val noteUseCase: NoteUseCase) : ViewModel() {
 
-    @Inject lateinit var noteUseCase: NoteUseCase
     private val noteId = 0
     private var noteTitle = ""
     private var noteText = ""

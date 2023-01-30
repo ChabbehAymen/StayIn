@@ -12,19 +12,34 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.stayin.R
+import com.example.stayin.data.NoteDatabase
 import com.example.stayin.databinding.FragmentEditBinding
 import com.example.stayin.presentation.ui.SharedViewModel
+import com.example.stayin.presentation.ui.SharedViewModelFactory
 import com.example.stayin.presentation.utils.ConstantValues
+import com.example.stayin.repository.RepoImplementation
+import com.example.stayin.useCases.*
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
 
-@AndroidEntryPoint
+
 class EditFragment : Fragment() {
 
     private var _binding: FragmentEditBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: SharedViewModel by activityViewModels()
+    // I didn't know how to use Di, That's why I am using this horrible way /n
+    private val viewModel by activityViewModels<SharedViewModel> {
+        val repo = RepoImplementation(NoteDatabase.getDatabase(requireContext()).noteDao())
+        SharedViewModelFactory(
+            NoteUseCase(
+                GetNotesUseCase(repo),
+                DeleteNoteUseCase(repo),
+                UpdateNoteUseCase(repo),
+                InsertNoteUseCase(repo)
+            )
+        )
+    }
     private var toEditNoteId = ConstantValues.NULL_ARGUMENT
 
     override fun onCreateView(
