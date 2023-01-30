@@ -5,7 +5,6 @@ plugins {
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
     id "androidx.navigation.safeargs"
-    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -75,9 +74,4 @@ dependencies {
     //navigation component dependency
     implementation "androidx.navigation:navigation-fragment-ktx:2.5.2"
     implementation "androidx.navigation:navigation-ui-ktx:2.5.2"
-
-// Hilt dependencies
-    implementation "com.google.dagger:hilt-android:$hilt_version"
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-
 }
