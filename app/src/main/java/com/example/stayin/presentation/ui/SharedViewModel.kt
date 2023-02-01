@@ -5,14 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.stayin.data.NoteItem
 import com.example.stayin.presentation.utils.ConstantValues
 import com.example.stayin.useCases.NoteUseCase
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.observeOn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
 class SharedViewModel(private val noteUseCase: NoteUseCase) : ViewModel() {
 
     private val noteId = 0
@@ -22,23 +17,20 @@ class SharedViewModel(private val noteUseCase: NoteUseCase) : ViewModel() {
     private var noteImage = ConstantValues.nullString
     private var noteTag = "NOTE"
     private var noteColor = "WHITE"
-    private var _isOnEditMode = true
-    private var notesList = emptyList<NoteItem>()
+    private var _isOnEditMode = false
+    private var _notesList = mutableListOf<NoteItem>()
+    val notesList get() = _notesList
     val isOnEditMode get() = _isOnEditMode
     private lateinit var _editingNote: NoteItem
     val editingNote get() = _editingNote
 
     fun getNotes(): List<NoteItem> {
-        try {
-            viewModelScope.launch {
-                noteUseCase.getNotesUseCase.invoke().collect {
-                    notesList = it
-                }
+        viewModelScope.launch {
+            noteUseCase.getNotesUseCase.invoke().collect {
+                _notesList.addAll(it)
             }
-        } catch (exception: Exception) {
-            println("getListViewModelException: $exception")
         }
-        return notesList
+        return _notesList
     }
 
     private fun collectedNote(): NoteItem {
@@ -66,7 +58,7 @@ class SharedViewModel(private val noteUseCase: NoteUseCase) : ViewModel() {
     }
 
     fun getNoteById(id: Int): NoteItem {
-        val note = notesList.find { it.id == id }
+        val note = _notesList.find { it.id == id }
         _editingNote = note!!
         return note
     }

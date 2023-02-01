@@ -23,6 +23,7 @@ class MainFragmentAdapter(private val onItemClicked: (NoteItem) -> Unit): ListAd
                 loadNoteImage()
             bindNoteItems(noteItem)
             onItemClickListener(noteItem)
+
         }
 
         private fun setColor(color: String): Int {
@@ -96,6 +97,7 @@ class MainFragmentAdapter(private val onItemClicked: (NoteItem) -> Unit): ListAd
             override fun areContentsTheSame(oldItem: NoteItem, newItem: NoteItem): Boolean {
                 return oldItem.text == newItem.text || oldItem.title == newItem.title
             }
+
         }
 
     }

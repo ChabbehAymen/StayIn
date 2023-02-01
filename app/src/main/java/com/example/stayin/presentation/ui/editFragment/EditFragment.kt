@@ -19,7 +19,6 @@ import com.example.stayin.presentation.ui.SharedViewModelFactory
 import com.example.stayin.presentation.utils.ConstantValues
 import com.example.stayin.repository.RepoImplementation
 import com.example.stayin.useCases.*
-import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -110,7 +109,7 @@ class EditFragment : Fragment() {
     }
 
     private fun getCurrentDateAndTime(): String {
-        val simpleDateFormat = SimpleDateFormat("ddMMyyyy_HHmm", Locale.getDefault())
+        val simpleDateFormat = SimpleDateFormat("dd-M-Myy_HHmm", Locale.getDefault())
         return simpleDateFormat.format(Date())
     }
 

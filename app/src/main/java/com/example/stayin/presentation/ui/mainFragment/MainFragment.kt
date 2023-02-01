@@ -15,7 +15,6 @@ import com.example.stayin.presentation.ui.SharedViewModelFactory
 import com.example.stayin.presentation.utils.ConstantValues
 import com.example.stayin.repository.RepoImplementation
 import com.example.stayin.useCases.*
-import dagger.hilt.android.AndroidEntryPoint
 
 class MainFragment : Fragment() {
 

@@ -1,8 +1,7 @@
 package com.example.stayin.useCases
 
-import javax.inject.Inject
 
-data class NoteUseCase @Inject constructor (
+data class NoteUseCase (
     val getNotesUseCase: GetNotesUseCase,
     val deleteNoteUseCase: DeleteNoteUseCase,
     val updateNoteUseCase: UpdateNoteUseCase,
