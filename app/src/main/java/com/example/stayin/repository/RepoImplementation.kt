@@ -9,6 +9,10 @@ class RepoImplementation(private val noteDao: NoteDao): NotesRepo {
         return noteDao.getAll()
     }
 
+    override fun getNoteById(id: Int): Flow<NoteItem> {
+        return noteDao.getNote(id)
+    }
+
     override suspend fun insertNote(note: NoteItem) {
         noteDao.insert(note)
     }

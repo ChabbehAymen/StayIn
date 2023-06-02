@@ -1,5 +1,7 @@
 package com.example.stayin.presentation.utils
 
+import kotlinx.coroutines.flow.Flow
+
 object ConstantValues {
     const val white = "WHITE"
     const val blue = "BLUE"
@@ -8,5 +10,7 @@ object ConstantValues {
     const val yellow = "YELLOW"
     const val nullString = "NULL"
     const val NULL_ARGUMENT = -1
+
+
 
 }

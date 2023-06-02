@@ -1,4 +1,4 @@
-package com.example.stayin.presentation.ui
+package com.example.stayin.presentation.ui.editFragment.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

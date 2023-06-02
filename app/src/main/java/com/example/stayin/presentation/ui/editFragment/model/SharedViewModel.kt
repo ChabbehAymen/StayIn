@@ -1,5 +1,6 @@
-package com.example.stayin.presentation.ui
+package com.example.stayin.presentation.ui.editFragment.model
 
+import android.provider.ContactsContract.CommonDataKinds.Note
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stayin.data.NoteItem
@@ -18,20 +19,10 @@ class SharedViewModel(private val noteUseCase: NoteUseCase) : ViewModel() {
     private var noteTag = "NOTE"
     private var noteColor = "WHITE"
     private var _isOnEditMode = false
-    private var _notesList = mutableListOf<NoteItem>()
-    val notesList get() = _notesList
     val isOnEditMode get() = _isOnEditMode
     private lateinit var _editingNote: NoteItem
     val editingNote get() = _editingNote
 
-    fun getNotes(): List<NoteItem> {
-        viewModelScope.launch {
-            noteUseCase.getNotesUseCase.invoke().collect {
-                _notesList.addAll(it)
-            }
-        }
-        return _notesList
-    }
 
     private fun collectedNote(): NoteItem {
         return NoteItem(
@@ -58,9 +49,16 @@ class SharedViewModel(private val noteUseCase: NoteUseCase) : ViewModel() {
     }
 
     fun getNoteById(id: Int): NoteItem {
-        val note = _notesList.find { it.id == id }
+        var note: NoteItem? = null
+        viewModelScope.launch {
+            noteUseCase.getNoteByIdUseCase.invoke(id).collect{
+                note = it
+            }
+
+        }
+//        Todo I have an null pointer error over here Flow the path and see why
         _editingNote = note!!
-        return note
+        return note!!
     }
 
 

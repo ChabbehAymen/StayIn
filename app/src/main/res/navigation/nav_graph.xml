@@ -27,7 +27,9 @@
         tools:layout="@layout/fragment_edit" >
         <action
             android:id="@+id/action_editFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            app:destination="@id/mainFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/mainFragment"/>
         <argument
             android:name="noteId"
             app:argType="integer"

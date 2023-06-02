@@ -4,18 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.stayin.R
 import com.example.stayin.data.NoteDatabase
 import com.example.stayin.databinding.FragmentEditBinding
-import com.example.stayin.presentation.ui.SharedViewModel
-import com.example.stayin.presentation.ui.SharedViewModelFactory
+import com.example.stayin.presentation.ui.editFragment.model.SharedViewModel
+import com.example.stayin.presentation.ui.editFragment.model.SharedViewModelFactory
 import com.example.stayin.presentation.utils.ConstantValues
 import com.example.stayin.repository.RepoImplementation
 import com.example.stayin.useCases.*
@@ -27,12 +26,14 @@ class EditFragment : Fragment() {
 
     private var _binding: FragmentEditBinding? = null
     private val binding get() = _binding!!
+
     // I didn't know how to use Di, That's why I am using this horrible way /n
     private val viewModel by activityViewModels<SharedViewModel> {
         val repo = RepoImplementation(NoteDatabase.getDatabase(requireContext()).noteDao())
         SharedViewModelFactory(
             NoteUseCase(
                 GetNotesUseCase(repo),
+                GetNoteByIdUseCase(repo),
                 DeleteNoteUseCase(repo),
                 UpdateNoteUseCase(repo),
                 InsertNoteUseCase(repo)
@@ -62,12 +63,14 @@ class EditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onEditModeUiUpdate()
-        setDateAndTimeText(binding.dateAndTimeText)
-        onBackButtonClick(binding.navigateBackImageButton)
-        onShowEditFragmentBottomSheetDialog(binding.bottomSheetDialogBtn)
-        onSaveButtonClicked(binding.saveNoteImageButton)
+        setDateAndTimeText()// To get the current date and time
+        onBackButtonClick()
+        onShowEditFragmentBottomSheetDialog()// function to show the bottom sheet dialog
+        onSaveButtonClicked()
         observeTextInputChange()
     }
+
+// checking if it's on edit mode
 
     private fun isOnEditMode() {
         if (toEditNoteId != ConstantValues.NULL_ARGUMENT) {
@@ -77,28 +80,30 @@ class EditFragment : Fragment() {
     }
 
     private fun onEditModeUiUpdate() {
-        if (viewModel.isOnEditMode){
-            val noteItem = viewModel.editingNote
-            binding.apply {
-                textFieldForTitle.setText(noteItem.title)
-                textFieldForNote.setText(noteItem.text)
-            }
+        if (viewModel.isOnEditMode) {
+            hideSaveBtn()
+            updateTitle()
+            updateNote()
         }
     }
 
-    private fun onBackButtonClick(backButton: ImageButton) {
-        backButton.setOnClickListener {
-            navigateToMainFragment()
-        }
+    private fun hideSaveBtn(){
+        binding.saveNoteImageButton.visibility= View.GONE
     }
 
-    private fun navigateToMainFragment() {
-        val action = R.id.action_editFragment_to_mainFragment
-        findNavController().navigate(action)
+    private fun updateTitle(){
+        binding.textFieldForTitle.setText(viewModel.editingNote.title)
     }
 
-    private fun onShowEditFragmentBottomSheetDialog(arrowUpButton: ImageButton) {
-        arrowUpButton.setOnClickListener {
+    private fun updateNote(){
+        binding.textFieldForNote.setText(viewModel.editingNote.text)
+    }
+//<-- checking if it's on edit mode
+
+// pooping up the bottom sheet
+
+    private fun onShowEditFragmentBottomSheetDialog() {
+        binding.bottomSheetDialogBtn.setOnClickListener {
             showEditFragmentBottomSheetDialog()
         }
     }
@@ -107,30 +112,60 @@ class EditFragment : Fragment() {
         val bottomSheetDialog = EditFragmentBottomSheetDialog()
         bottomSheetDialog.show(childFragmentManager.beginTransaction(), "Bottom Sheet")
     }
+//<-- pooping up the bottom sheet
+
+// observing view part of the fragment
+
+    // get the date and tame
+    private fun setDateAndTimeText() {
+        viewModel.getNoteDateAndTime(getCurrentDateAndTime())
+        binding.dateAndTimeText.text = getCurrentDateAndTime()
+    }
 
     private fun getCurrentDateAndTime(): String {
-        val simpleDateFormat = SimpleDateFormat("dd-M-Myy_HHmm", Locale.getDefault())
+        val simpleDateFormat = SimpleDateFormat("dd-MM-yy_HH:mm", Locale.getDefault())
         return simpleDateFormat.format(Date())
     }
 
-    private fun setDateAndTimeText(itTextView: TextView) {
-        viewModel.getNoteDateAndTime(getCurrentDateAndTime())
-        itTextView.text = getCurrentDateAndTime()
+    //<-- get the date and tame
+
+    private fun observeTextInputChange() {
+        observeTitleTextChange()
+        observeNoteTextChange()
     }
 
-    private fun onSaveButtonClicked(saveImageButton: ImageButton) {
-        saveImageButton.setOnClickListener {
-            if (isNoteValid())
-                makeToastError()
-            else {
-                viewModel.insertNewNote()
-                navigateToMainFragment()
-
-            }
+    // text handling
+    private fun observeTitleTextChange() {
+        binding.textFieldForTitle.doOnTextChanged { text, _, _, _ ->
+            viewModel.getNoteTitle(text.toString())
         }
     }
 
-    private fun isNoteValid(): Boolean {
+    private fun observeNoteTextChange() {
+        binding.textFieldForNote.doOnTextChanged { text, _, _, _ ->
+            viewModel.getNoteText(text.toString())
+        }
+    }
+    //<-- text handling
+
+//<-- observing view part of the fragment
+
+    // saving and navigating from the fragment
+    private fun onBackButtonClick() {
+        binding.navigateBackImageButton.setOnClickListener {
+            navigateToMainFragment()
+        }
+    }
+
+    // saving note
+    private fun onSaveButtonClicked() {
+        binding.saveNoteImageButton.setOnClickListener {
+            if (isNoteInvalid()) makeToastError()
+            else insertNoteAndNavigate()
+        }
+    }
+
+    private fun isNoteInvalid(): Boolean {
         return isNoteTextFieldEmpty() && isTitleTextFieldEmpty()
     }
 
@@ -149,25 +184,19 @@ class EditFragment : Fragment() {
             .show()
     }
 
-    private fun observeTextInputChange() {
-        observeTitleTextChange()
-        observeNoteTextChange()
+    private fun insertNoteAndNavigate() {
+        viewModel.insertNewNote()
+        navigateToMainFragment()
     }
 
-    private fun observeTitleTextChange() {
-        binding.textFieldForTitle.doOnTextChanged { text, _, _, _ ->
-            viewModel.getNoteTitle(text.toString())
-        }
-    }
+    //<-- saving note
 
-    private fun observeNoteTextChange() {
-        binding.textFieldForNote.doOnTextChanged { text, _, _, _ ->
-            viewModel.getNoteText(text.toString())
-        }
+    // navigating back to main fragment
+    private fun navigateToMainFragment() {
+        val action = R.id.action_editFragment_to_mainFragment
+        findNavController().navigate(action)
     }
+    //<-- navigating back to main fragment
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
+//<-- saving and navigating from the fragment
 }

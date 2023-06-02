@@ -1,8 +1,10 @@
 package com.example.stayin.presentation.ui.mainFragment
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,18 +13,23 @@ import com.example.stayin.data.NoteItem
 import com.example.stayin.databinding.NoteItemBinding
 import com.example.stayin.presentation.utils.ConstantValues
 
-class MainFragmentAdapter(private val onItemClicked: (NoteItem) -> Unit): ListAdapter<NoteItem, MainFragmentAdapter.ViewHolder>(
+class MainFragmentAdapter(private val itemInteractions: ItemInteractions): ListAdapter<NoteItem, MainFragmentAdapter.ViewHolder>(
     DiffCallBack
 ) {
 
     inner class ViewHolder(private var binding: NoteItemBinding) : RecyclerView.ViewHolder(binding.root){
+
+        lateinit var context: Context
+        lateinit var mNoteItem: NoteItem
         fun bind(noteItem: NoteItem){
+            mNoteItem = noteItem
             if (noteItem.image == ConstantValues.nullString)
                 hideNoteImage()
             else
                 loadNoteImage()
-            bindNoteItems(noteItem)
-            onItemClickListener(noteItem)
+            bindNoteItems()
+            onItemClickListener()
+            onItemLongClickListener()
 
         }
 
@@ -44,12 +51,8 @@ class MainFragmentAdapter(private val onItemClicked: (NoteItem) -> Unit): ListAd
             binding.noteImage.setImageResource(R.drawable.test_image)
         }
 
-        private fun bindNoteItems(noteItem: NoteItem){
-            bindNoteTitle(noteItem.title)
-            bindNoteText(noteItem.text)
-            bindNoteTag(noteItem.tag)
-            bindNoteDate(noteItem.date)
-            bindNoteBackgroundColor(noteItem.color)
+        private fun bindNoteItems(){
+            bindViews()
         }
 
         private fun bindNoteTitle(noteTitle: String){
@@ -72,9 +75,24 @@ class MainFragmentAdapter(private val onItemClicked: (NoteItem) -> Unit): ListAd
             binding.firstParent.setBackgroundResource(setColor(noteBackgroundColor))
         }
 
-        private fun onItemClickListener(noteItem: NoteItem) {
+        private fun bindViews(){
+            bindNoteTitle(mNoteItem.title)
+            bindNoteText(mNoteItem.text)
+            bindNoteTag(mNoteItem.tag)
+            bindNoteDate(mNoteItem.date)
+            bindNoteBackgroundColor(mNoteItem.color)
+        }
+
+        private fun onItemClickListener() {
             binding.parentCardView.setOnClickListener {
-                onItemClicked.invoke(noteItem)
+                itemInteractions.onItemClickListener(mNoteItem)
+            }
+        }
+
+        private fun onItemLongClickListener(){
+            binding.parentCardView.setOnLongClickListener {
+                itemInteractions.onItemLongClickListener(mNoteItem)
+                true
             }
         }
     }
@@ -85,6 +103,7 @@ class MainFragmentAdapter(private val onItemClicked: (NoteItem) -> Unit): ListAd
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.context = holder.itemView.context
         holder.bind(getItem(position))
     }
 
@@ -101,4 +120,12 @@ class MainFragmentAdapter(private val onItemClicked: (NoteItem) -> Unit): ListAd
         }
 
     }
+}
+
+interface ItemInteractions{
+
+    fun onItemClickListener(noteItem: NoteItem)
+
+    fun onItemLongClickListener(noteItem: NoteItem)
+
 }

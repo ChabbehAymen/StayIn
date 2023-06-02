@@ -25,16 +25,33 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="20dp">
+                app:cardCornerRadius="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
-                    android:id="@+id/note_image"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:scaleType="fitXY"
-                    tools:src="@tools:sample/backgrounds/scenic" />
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/note_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:scaleType="fitXY"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:src="@tools:sample/backgrounds/scenic" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
             </androidx.cardview.widget.CardView>
 
@@ -56,7 +73,7 @@
                 <TextView
                     android:id="@+id/note_text"
                     style="@style/TextAppearance.AppCompat.Body1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:maxLines="7"
@@ -72,12 +89,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/note_item_tag_shape"
-                        android:padding="6dp">
+                        android:padding="4dp">
 
                         <TextView
                             android:id="@+id/note_tag"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textSize="8sp"
                             android:text="@string/notes"
                             android:textAllCaps="true" />
                     </FrameLayout>
