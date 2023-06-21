@@ -56,7 +56,7 @@ class SharedViewModel(private val noteUseCase: NoteUseCase) : ViewModel() {
             }
 
         }
-//        Todo I have an null pointer error over here Flow the path and see why
+//        Todo I have an null pointer error over here Follow the path and see why
         _editingNote = note!!
         return note!!
     }

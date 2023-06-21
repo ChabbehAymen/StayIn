@@ -91,10 +91,11 @@ class MainFragmentAdapter(private val itemInteractions: ItemInteractions): ListA
 
         private fun onItemLongClickListener(){
             binding.parentCardView.setOnLongClickListener {
-                itemInteractions.onItemLongClickListener(mNoteItem)
+                itemInteractions.onItemLongClickListener(mNoteItem, position)
                 true
             }
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -126,6 +127,6 @@ interface ItemInteractions{
 
     fun onItemClickListener(noteItem: NoteItem)
 
-    fun onItemLongClickListener(noteItem: NoteItem)
+    fun onItemLongClickListener(noteItem: NoteItem, position: Int)
 
 }
